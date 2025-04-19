@@ -1,20 +1,18 @@
-'use client'; // Necesario porque usamos QueryClientProvider
-
-import React from 'react'; // Añade esta línea
+'use client';
+import { AuthContextProvider } from './context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import './globals.css'; // Tus estilos globales (reemplaza a index.css)
 
-export const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body>
-        <React.StrictMode>
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <AuthContextProvider>
             {children}
-          </QueryClientProvider>
-        </React.StrictMode>
+          </AuthContextProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

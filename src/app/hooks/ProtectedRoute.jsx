@@ -1,25 +1,24 @@
-'use client'; // Necesario porque usamos hooks y navegación del cliente
-
+'use client';
+import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { UserAuth } from "../context/AuthContent";
 
 export const ProtectedRoute = ({ children, accessBy }) => {
-  const { user } = UserAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
+  if (loading) return null; // o un spinner
+
   if (accessBy === "non-authenticated") {
-    if (!user) {
-      return children;
-    } else {
-      router.replace('/');
-      return null;
-    }
-  } else if (accessBy === "authenticated") {
-    if (user) {
-      return children;
-    }
+    if (!user) return children;
+    router.replace('/');
+    return null;
   }
 
-  router.replace('/login');
+  if (accessBy === "authenticated") {
+    if (user) return children;
+    router.replace('/login');
+    return null;
+  }
+
   return null;
 };
