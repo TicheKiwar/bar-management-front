@@ -10,30 +10,35 @@ import {
   RegistrarAdmin,
   supabase,
   FooterLogin,
-
 } from "../../index";
-import { Device } from "../../styles/breakpoints"
+
+import { Device } from "../../styles/breakpoints";
 import estrellas from "../../assets/estrellasVarias.svg";
-import { useMutation } from "@tanstack/react-query";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import carrito from "../../assets/copa.png";
 import logo from "../../assets/inventarioslogo.png";
 import { MdOutlineInfo } from "react-icons/md";
 import { ThemeContext } from "../../App";
+import { useMutation } from "@tanstack/react-query";
+import { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router"; // ✅ Cambio aquí
+
 export function LoginTemplate() {
-  const { setTheme, theme } = useContext(ThemeContext);
+  const { setTheme } = useContext(ThemeContext);
+
   useEffect(() => {
     setTheme("light");
   }, []);
+
   const { insertarUsuario } = useUsuariosStore();
   const { signInWithEmail } = useAuthStore();
   const [state, setState] = useState(false);
   const [correo, setCorreo] = useState("");
   const [pass, setPass] = useState("");
   const [stateInicio, setStateInicio] = useState(false);
-  const navigate = useNavigate();
+
+  const router = useRouter(); // ✅ Cambio aquí
+
   const mutation = useMutation({
     mutationFn: async () => {
       const p = {
@@ -43,19 +48,20 @@ export function LoginTemplate() {
       await insertarUsuario(p);
     },
   });
+
   const {
     register,
     formState: { errors },
     handleSubmit,
-    watch,
   } = useForm();
+
   async function iniciar(data) {
     const response = await signInWithEmail({
       correo: data.correo,
       pass: data.pass,
     });
     if (response) {
-      navigate("/");
+      router.push("/"); // ✅ Cambio aquí
     } else {
       setStateInicio(!stateInicio);
     }
@@ -64,11 +70,12 @@ export function LoginTemplate() {
   return (
     <Container imgfondo={v.imagenfondo}>
       <div className="contentLogo">
-        <img src={logo}></img>
+        <img src={logo} alt="logo" />
         <span>BarMaster</span>
       </div>
+
       <div className="bannerlateral">
-        <img src={carrito}></img>
+        <img src={carrito} alt="carrito" />
       </div>
 
       <div className="contentCard">
@@ -80,11 +87,11 @@ export function LoginTemplate() {
             <TextoStateInicio>datos incorrectos</TextoStateInicio>
           )}
           <span className="ayuda">
-            {" "}
-            Puedes crear una cuenta nueva ó <br></br>solicitar a tu empleador
-            una. <MdOutlineInfo />
+            Puedes crear una cuenta nueva ó <br />
+            solicitar a tu empleador una. <MdOutlineInfo />
           </span>
           <p className="frase">Gestiona tu bar</p>
+
           <form onSubmit={handleSubmit(iniciar)}>
             <InputText icono={<v.iconoemail />}>
               <input
@@ -99,6 +106,7 @@ export function LoginTemplate() {
               <label className="form__label">email</label>
               {errors.correo?.type === "required" && <p>Campo requerido</p>}
             </InputText>
+
             <InputText icono={<v.iconopass />}>
               <input
                 className="form__field"
@@ -112,6 +120,7 @@ export function LoginTemplate() {
               <label className="form__label">pass</label>
               {errors.pass?.type === "required" && <p>Campo requerido</p>}
             </InputText>
+
             <ContainerBtn>
               <Btnsave titulo="Iniciar" bgcolor="#fc6b32" />
               <Btnsave
@@ -127,6 +136,9 @@ export function LoginTemplate() {
     </Container>
   );
 }
+
+
+
 const Container = styled.div`
   background-size: cover;
   height: 100vh;

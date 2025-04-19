@@ -2,51 +2,41 @@ import { useState } from "react";
 import { v } from "../../styles/variables";
 import styled from "styled-components";
 import { LinksArray, SecondarylinksArray } from "../../index";
-import { NavLink } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/router";
 export function Menuambur() {
   const [click, setClick] = useState(false);
+  const router = useRouter(); // para saber la ruta actual
+
   return (
     <Container>
       <NavBar>
-        <HamburgerMenu
-          $click={click.toString()}
-          onClick={() => setClick(!click)}
-        >
-          {/* <div className="contentLogo active">
-            <img src={v.logo} />
-          </div> */}
-
-          {/* <input type="checkbox" id="checkbox" onClick={() => setClick(!click)}/> */}
-          <label for="checkbox" className="toggle">
+        <HamburgerMenu $click={click.toString()} onClick={() => setClick(!click)}>
+          <label htmlFor="checkbox" className="toggle">
             <div className="bars" id="bar1"></div>
             <div className="bars" id="bar2"></div>
             <div className="bars" id="bar3"></div>
           </label>
         </HamburgerMenu>
+
         <Menu $click={click.toString()}>
           {LinksArray.map(({ icon, label, to }) => (
-            <div
-              key={label}
-              className="LinkContainer"
-              onClick={() => setClick(!click)}
-            >
-              <NavLink to={to} className="Links">
+            <div key={label} className="LinkContainer" onClick={() => setClick(false)}>
+              <Link href={to} className={`Links ${router.pathname === to ? "active" : ""}`}>
                 <div className="Linkicon">{icon}</div>
                 <span>{label}</span>
-              </NavLink>
+              </Link>
             </div>
           ))}
+
           <Divider />
+
           {SecondarylinksArray.map(({ icon, label, to }) => (
-            <div
-              key={label}
-              className="LinkContainer"
-              onClick={() => setClick(!click)}
-            >
-              <NavLink to={to} className="Links">
+            <div key={label} className="LinkContainer" onClick={() => setClick(false)}>
+              <Link href={to} className={`Links ${router.pathname === to ? "active" : ""}`}>
                 <div className="Linkicon">{icon}</div>
                 <span>{label}</span>
-              </NavLink>
+              </Link>
             </div>
           ))}
         </Menu>

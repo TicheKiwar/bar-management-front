@@ -1,68 +1,49 @@
 import styled from "styled-components";
 import fondocuadros from "../../assets/fondocuadros.svg";
-import { NavLink, Link, Outlet } from "react-router-dom";
+import Link from "next/link";
 import { DataModulosConfiguracion } from "../../utils/dataEstatica";
 import { usePermisosStore } from "../../store/PermisosStore";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Mensaje } from "../moleculas/Mensaje";
+
 export function ConfiguracionTemplate() {
   const { datapermisos, compararPermisos } = usePermisosStore();
   const [statePermiso, setStatePermiso] = useState(false);
-  // const {data,isLoading,error} = useQuery({queryKey:["comparar permsiso"],queryFn:()=>compararPermisos()})
 
-  // useEffect(() => {
-  //   compararPermisos();
-  //   // datapermisos.forEach((item) => {
-  //   //   let modulo = item.modulos.nombre;
-  //   //   console.log(modulo)
-  //   //   DataModulosConfiguracion.forEach((itemmodulos) => {
-  //   //     if (itemmodulos.title === modulo) {
-  //   //       itemmodulos.state = true;
-  //   //     } else {
-          
-  //   //     }
-  //   //   });
-  //   // });
-  // }, [datapermisos]);
-  // if (isLoading){
-  //   return <span>Cargando</span>
-  // }
-  // if(error){
-  //   return <span>error</span>
-  // }
   return (
     <Container>
-     
       <div id="cards">
-        {DataModulosConfiguracion.map((item, index) => {
-          return (
-            <Link to={item.state?item.link:""} className={item.state?"card": "card false"} key={index}>
-
-              <Mensaje state ={item.state}/>
-              <div class="card-content">
-                <div class="card-image">
-                  <img src={item.icono} />
-                </div>
-       
-
-                <div class="card-info-wrapper">
-                  <div class="card-info">
-                    <i class="fa-duotone fa-unicorn"></i>
-                    <div class="card-info-title">
-                      <h3>{item.title}</h3>
-                      <h4>{item.subtitle}</h4>
-                    </div>
+        {DataModulosConfiguracion.map((item, index) => (
+          <Link
+            href={item.state ? item.link : "#"}
+            className={item.state ? "card" : "card false"}
+            key={index}
+          >
+            <Mensaje state={item.state} />
+            <div className="card-content">
+              <div className="card-image">
+                <img src={item.icono} alt={`icono-${item.title}`} />
+              </div>
+              <div className="card-info-wrapper">
+                <div className="card-info">
+                  <i className="fa-duotone fa-unicorn"></i>
+                  <div className="card-info-title">
+                    <h3>{item.title}</h3>
+                    <h4>{item.subtitle}</h4>
                   </div>
                 </div>
               </div>
-            </Link>
-          );
-        })}
+            </div>
+          </Link>
+        ))}
       </div>
     </Container>
   );
 }
+
+
+
 const Container = styled.div`
   --bg-color: rgb(20, 20, 20);
   --card-color: rgb(23, 23, 23);

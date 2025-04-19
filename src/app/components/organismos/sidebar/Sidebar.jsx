@@ -1,15 +1,16 @@
 import styled from "styled-components";
 import {
-  
   LinksArray,
   SecondarylinksArray,
   SidebarCard,
   ToggleTema,
 } from "../../../index";
-import {v} from "../../../styles/variables"
-import { NavLink } from "react-router-dom";
+import { v } from "../../../styles/variables";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export function Sidebar({ state, setState }) {
+  const router = useRouter(); // ✅
 
   return (
     <Main $isopen={state.toString()}>
@@ -23,48 +24,52 @@ export function Sidebar({ state, setState }) {
           </div>
           <h2>BarMaster</h2>
         </div>
-        {LinksArray.map(({ icon, label, to }) => (
-          <div
-            className={state ? "LinkContainer active" : "LinkContainer"}
-            key={label}
-          >
-            <NavLink
-              to={to}
-              className={({ isActive }) => `Links${isActive ? ` active` : ``}`}
+
+        {LinksArray.map(({ icon, label, to }) => {
+          const isActive = router.pathname === to;
+          return (
+            <div
+              className={state ? "LinkContainer active" : "LinkContainer"}
+              key={label}
             >
-              <div className="Linkicon">{icon}</div>
-              <span className={state ? "label_ver" : "label_oculto"}>
-                {label}
-              </span>
-              
-            </NavLink>
-          </div>
-        ))}
+              <Link href={to} className={`Links${isActive ? " active" : ""}`}>
+                <div className="Linkicon">{icon}</div>
+                <span className={state ? "label_ver" : "label_oculto"}>
+                  {label}
+                </span>
+              </Link>
+            </div>
+          );
+        })}
+
         <Divider />
-        {SecondarylinksArray.map(({ icon, label, to }) => (
-          <div
-            className={state ? "LinkContainer active" : "LinkContainer"}
-            key={label}
-          >
-            <NavLink
-              to={to}
-              className={({ isActive }) => `Links${isActive ? ` active` : ``}`}
+
+        {SecondarylinksArray.map(({ icon, label, to }) => {
+          const isActive = router.pathname === to;
+          return (
+            <div
+              className={state ? "LinkContainer active" : "LinkContainer"}
+              key={label}
             >
-              <div className="Linkicon">{icon}</div>
-              <span className={state ? "label_ver" : "label_oculto"}>
-                {label}
-              </span>
-             
-            </NavLink>
-          </div>
-        ))}
-        <ToggleTema/>
+              <Link href={to} className={`Links${isActive ? " active" : ""}`}>
+                <div className="Linkicon">{icon}</div>
+                <span className={state ? "label_ver" : "label_oculto"}>
+                  {label}
+                </span>
+              </Link>
+            </div>
+          );
+        })}
+
+        <ToggleTema />
         <Divider />
         {state && <SidebarCard />}
       </Container>
     </Main>
   );
 }
+
+
 const Container = styled.div`
   color: ${(props) => props.theme.text};
   background: ${(props) => props.theme.bg};
@@ -81,7 +86,7 @@ const Container = styled.div`
     border-radius: 10px;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${(props)=>props.theme.colorScroll};
+    background-color: ${(props) => props.theme.colorScroll};
     border-radius: 10px;
   }
 
@@ -100,7 +105,7 @@ const Container = styled.div`
       width: 30px;
       cursor: pointer;
       transition: 0.3s ease;
-      transform: ${({ $isopen }) => ($isopen==="true" ? `scale(0.7)` : `scale(1.5)`)}
+      transform: ${({ $isopen }) => ($isopen === "true" ? `scale(0.7)` : `scale(1.5)`)}
         rotate(${({ theme }) => theme.logorotate});
       img {
         width: 100%;
@@ -108,7 +113,7 @@ const Container = styled.div`
       }
     }
     h2 {
-      display: ${({ $isopen }) => ($isopen==="true" ? `block` : `none`)};
+      display: ${({ $isopen }) => ($isopen === "true" ? `block` : `none`)};
     }
     @keyframes flotar {
       0% {
@@ -188,7 +193,7 @@ const Main = styled.div`
     transition: all 0.2s;
     z-index: 2;
     transform: ${({ $isopen }) =>
-      $isopen==="true" ? `translateX(162px) rotate(3.142rad)` : `initial`};
+    $isopen === "true" ? `translateX(162px) rotate(3.142rad)` : `initial`};
     color: ${(props) => props.theme.text};
   }
 `;

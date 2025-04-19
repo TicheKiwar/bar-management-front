@@ -1,12 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
+'use client'; // Necesario porque usamos hooks y navegación del cliente
+
+import { useRouter } from 'next/navigation';
 import { UserAuth } from "../context/AuthContent";
+
 export const ProtectedRoute = ({ children, accessBy }) => {
   const { user } = UserAuth();
+  const router = useRouter();
+
   if (accessBy === "non-authenticated") {
     if (!user) {
       return children;
     } else {
-      return <Navigate to="/" />;
+      router.replace('/');
+      return null;
     }
   } else if (accessBy === "authenticated") {
     if (user) {
@@ -14,5 +20,6 @@ export const ProtectedRoute = ({ children, accessBy }) => {
     }
   }
 
- return <Navigate to="/login"/>
+  router.replace('/login');
+  return null;
 };

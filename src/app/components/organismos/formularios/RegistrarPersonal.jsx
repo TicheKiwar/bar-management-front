@@ -27,7 +27,7 @@ import Emojipicker from "emoji-picker-react";
 import { useEmpresaStore } from "../../../store/EmpresaStore";
 import { Device } from "../../../styles/breakpoints";
 import { useQuery } from "@tanstack/react-query";
-import { queryClient } from "../../../main";
+import { queryClient } from "../../../layout";
 import { QueryCache } from "@tanstack/react-query";
 
 export function RegistrarPersonal({

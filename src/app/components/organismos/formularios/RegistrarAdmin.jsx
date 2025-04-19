@@ -7,7 +7,8 @@ import {
   useOperaciones,
   Btnsave,
   useUsuariosStore,
-  useCategoriasStore, useAuthStore,
+  useCategoriasStore,
+  useAuthStore,
 } from "../../../index";
 import { useForm } from "react-hook-form";
 import { CirclePicker } from "react-color";
@@ -15,53 +16,55 @@ import Emojipicker from "emoji-picker-react";
 import { MdAlternateEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router"; // ✅ CAMBIO
+
 export function RegistrarAdmin({ state, setState }) {
   const { insertarUsuarioAdmin } = useUsuariosStore();
   const { signInWithEmail } = useAuthStore();
-  const navigate = useNavigate();
+  const router = useRouter(); // ✅ CAMBIO
+
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
+
   const [stateInicio, setStateInicio] = useState(false);
+
   const mutation = useMutation({
     mutationFn: async (data) => {
       const p = {
         correo: data.correo,
         pass: data.pass,
-        tipouser: "superadmin"
+        tipouser: "superadmin",
       };
       const dt = await insertarUsuarioAdmin(p);
       if (dt) {
-        navigate("/");
+        router.push("/"); // ✅ CAMBIO
       } else {
         setStateInicio(!stateInicio);
       }
     },
   });
+
   return (
     <Container>
-      <ContentClose >
+      <ContentClose>
         <span onClick={setState}>x</span>
       </ContentClose>
       <section className="subcontainer">
-
-
         <div className="headers">
           <section>
             <h1>Registrar usuario</h1>
           </section>
-
-
         </div>
 
         <form className="formulario" onSubmit={handleSubmit(mutation.mutateAsync)}>
           <section>
             <article>
               <InputText icono={<MdAlternateEmail />}>
-                <input className="form__field"
+                <input
+                  className="form__field"
                   style={{ textTransform: "lowercase" }}
                   type="text"
                   placeholder="correo"
@@ -79,7 +82,8 @@ export function RegistrarAdmin({ state, setState }) {
             </article>
             <article>
               <InputText icono={<RiLockPasswordLine />}>
-                <input className="form__field"
+                <input
+                  className="form__field"
                   type="text"
                   placeholder="pass"
                   {...register("pass", {
@@ -103,6 +107,7 @@ export function RegistrarAdmin({ state, setState }) {
     </Container>
   );
 }
+
 const Container = styled.div`
   position: absolute;
   height: 100%;

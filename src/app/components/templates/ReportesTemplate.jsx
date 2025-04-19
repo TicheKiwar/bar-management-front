@@ -1,34 +1,60 @@
-import { NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
-export function ReportesTemplate() {
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+export function ReportesTemplate({ children }) {
+  const router = useRouter();
+
+  const SidebarItem = ({ href, children, active }) => {
+    return (
+      <Link href={href} passHref legacyBehavior>
+        <StyledLink className={active ? "active" : ""}>{children}</StyledLink>
+      </Link>
+    );
+  };
+
+  const isActive = (path) => router.pathname.endsWith(path);
+
   return (
     <Container>
       <PageContainer>
-        <Content>
-          <Outlet/>
-        </Content>
+        <Content>{children}</Content>
         <Sidebar>
           <SidebarSection>
             <SidebarTitle>Stock Actual</SidebarTitle>
-            <SidebarItem to="stock-actual-por-producto">
+            <SidebarItem href="/reportes/stock-actual-por-producto" active={isActive("stock-actual-por-producto")}>
               Por producto
             </SidebarItem>
-            <SidebarItem to="stock-actual-todos">Todos</SidebarItem>
-            <SidebarItem to="stock-bajo-minimo">Bajo del mínimo</SidebarItem>
+            <SidebarItem href="/reportes/stock-actual-todos" active={isActive("stock-actual-todos")}>
+              Todos
+            </SidebarItem>
+            <SidebarItem href="/reportes/stock-bajo-minimo" active={isActive("stock-bajo-minimo")}>
+              Bajo del mínimo
+            </SidebarItem>
           </SidebarSection>
           <SidebarSection>
-          <SidebarTitle>Entradas y salidas</SidebarTitle>
-          <SidebarItem to="kardex-entradas-salidas">Por producto</SidebarItem>
+            <SidebarTitle>Entradas y salidas</SidebarTitle>
+            <SidebarItem href="/reportes/kardex-entradas-salidas" active={isActive("kardex-entradas-salidas")}>
+              Por producto
+            </SidebarItem>
           </SidebarSection>
           <SidebarSection>
-          <SidebarTitle to="ss">Valorizado</SidebarTitle>
-          <SidebarItem to="inventario-valorado">Todos</SidebarItem>
+            <SidebarTitle>Valorizado</SidebarTitle>
+            <SidebarItem href="/reportes/inventario-valorado" active={isActive("inventario-valorado")}>
+              Todos
+            </SidebarItem>
           </SidebarSection>
         </Sidebar>
       </PageContainer>
     </Container>
   );
 }
+
+
+
+
+
+
 const Content = styled.div`
   padding: 20px;
   border-radius: 8px;

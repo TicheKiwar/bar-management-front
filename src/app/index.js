@@ -78,7 +78,7 @@ export * from './components/templates/ProductosTemplate';
 export * from './components/templates/ReportesTemplate';
 export * from './context/AuthContent';
 export * from './hooks/ProtectedRoute';
-export * from './main';
+export * from './layout';
 export * from './pages/Categorias';
 export * from './pages/Configuracion';
 export * from './pages/Empresa';
