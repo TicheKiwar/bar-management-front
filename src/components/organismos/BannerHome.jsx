@@ -19,7 +19,7 @@ export function BannerHome() {
             Bienvenido a BarMaster
           </span>
           <div className="content-text">
-          BarMaster te ayuda a tener un control de tus inventarios desde
+          BarMaster te ayuda a tener un control de tus bares desde
             cualquier dispositivo.
           </div>
 

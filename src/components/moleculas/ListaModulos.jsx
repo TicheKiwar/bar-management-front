@@ -2,95 +2,53 @@ import styled from "styled-components";
 import { useGlobalStore } from "../../store/GlobalStore";
 import { useEffect, useState } from "react";
 import { usePermisosStore } from "../../store/PermisosStore";
-export function ListaModulos({ setCheckboxs, checkboxs,accion }) {
+
+export function ListaModulos({ setCheckboxs, checkboxs, accion }) {
   const { datamodulos } = useGlobalStore();
   const { datapermisosEdit } = usePermisosStore();
   const [isChecked, setisChecked] = useState(true);
-  const [select, setSelect] = useState([]);
-  const [nuevadata, setnuevadata] = useState([]);
-  
-  console.log(select);
+
   useEffect(() => {
-    if (accion=="Editar"){
-       let allDocs = [];
-    datamodulos.map((element) => {
-      const statePermiso = datapermisosEdit?.some((objeto) =>
-        objeto.modulos.nombre.includes(element.nombre)
-      );
-      if (statePermiso) {
-        allDocs.push({ ...element, check: true  });
-      } else {
-        allDocs.push({ ...element, check: false });
-      }
-    });
-    console.log("nueva",datapermisosEdit)
-    setCheckboxs(allDocs)
-
-    }
-    else{
-      setCheckboxs(datamodulos)
-    }
-   
-    // setCheckboxs(datapermisosEdit)
-    // console.log(checkboxs)
-    // let allDocs = [];
-    // datamodulos.map((element) => {
-    //   const statePermiso = datapermisosEdit.some((objeto) =>
-    //     objeto.modulos.nombre.includes(element.nombre)
-    //   );
-    //   if (statePermiso) {
-    //     allDocs.push({ ...element, check: true });
-    //   } else {
-    //     allDocs.push({ ...element, check: false });
-    //   }
-    // });
-    // setnuevadata(allDocs)
-    // console.log("nuevas", allDocs);
-  }, [datapermisosEdit]);
-  function handlecheckbox(id) {
-    setCheckboxs((prev) => {
-      return prev?.map((item) => {
-        if (item.id === id) {
-          return { ...item, check: !item.check };
-        } else {
-          return { ...item };
-        }
+    if (accion === "Editar") {
+      let allDocs = datamodulos.map((element) => {
+        const statePermiso = datapermisosEdit?.some((objeto) =>
+          objeto.modulos.nombre.includes(element.nombre)
+        );
+        return { ...element, check: !!statePermiso };
       });
-    });
+      setCheckboxs(allDocs);
+    } else {
+      setCheckboxs(datamodulos);
+    }
+  }, [datapermisosEdit]);
 
-     console.log("checkboxes",checkboxs);
+  function handlecheckbox(id) {
+    setCheckboxs((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, check: !item.check } : { ...item }
+      )
+    );
   }
-  const seleccionar = (e) => {
-    let check = e.target.checked;
-    setisChecked(check);
-  };
 
   return (
     <Container>
-      {checkboxs?.map((item, index) => {
-        return (
-          <div key={index} className="content" onClick={() => handlecheckbox(item.id)}>
+      {checkboxs?.map((item, index) => (
+        <div key={index} className="content">
+          <label className="container">
             <input
-              onChange={(e) => seleccionar(e)}
-              id={item.id}            
               type="checkbox"
-              class="checkbox"
               checked={item.check}
+              onChange={() => handlecheckbox(item.id)}
             />
-            <span>{item.nombre}</span>
-          </div>
-        );
-      })}
-      {/* {checkboxs.map((item, index) => {
-        if (item.check) {
-          return <span>{item.nombre}</span>;
-        } else {
-          return null;
-        }
-      })} */}
+            <div className="checkmark"></div>
+          </label>
+          <span>{item.nombre}</span>
+        </div>
+      ))}
     </Container>
   );
 }
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -98,42 +56,110 @@ const Container = styled.div`
   border-radius: 15px;
   padding: 20px;
   gap: 15px;
+
   .content {
     display: flex;
+    align-items: center;
     gap: 20px;
   }
-  .checkbox {
-    appearance: none;
-    overflow: hidden;
-    min-width: 30px;
-    aspect-ratio: 1/1;
-    border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
-    border: 2px solid rgb(255, 102, 0);
+
+  .container {
+    display: block;
     position: relative;
-    transition: all 0.2s ease-in-out;
-    &::before {
-      position: absolute;
-      inset: 0;
-      content: "";
-      font-size: 35px;
-      transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    font-size: 20px;
+    user-select: none;
+  }
+
+  .container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: relative;
+    height: 2em;
+    width: 2em;
+    background: linear-gradient(145deg, #ececec, #c8c8c8);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2),
+      inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.4s ease, transform 0.3s ease;
+    overflow: hidden;
+  }
+
+  .container input:checked ~ .checkmark {
+    background: linear-gradient(45deg, #42e695, #3bb2b8);
+    transform: scale(1.1);
+    box-shadow: 0 0px 20px rgba(66, 230, 149, 0.6),
+      inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    width: 0.5em;
+    height: 1em;
+    border: solid white;
+    border-width: 0 0.2em 0.2em 0;
+    transform: rotate(45deg);
+    left: 0.65em;
+    top: 0.2em;
+  }
+
+  .container input:checked ~ .checkmark:after {
+    display: block;
+    animation: pulse 0.6s ease forwards;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0) rotate(45deg);
     }
-    &:checked {
-      border: 2px solid rgb(255, 212, 59);
-      background: linear-gradient(
-        135deg,
-        rgb(255, 212, 59) 0%,
-        rgb(255, 102, 0) 100%
-      );
-      box-shadow: -5px -5px 30px rgba(255, 212, 59, 1),
-        5px 5px 30px rgba(255, 102, 0, 1);
-      &::before {
-        background: linear-gradient(
-          135deg,
-          rgb(255, 212, 59) 0%,
-          rgb(255, 102, 0) 100%
-        );
-      }
+    50% {
+      transform: scale(1.2) rotate(45deg);
     }
+    100% {
+      transform: scale(1) rotate(45deg);
+    }
+  }
+
+  .container input:checked ~ .checkmark:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent 80%);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    border-radius: 50%;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    animation: sparkle 0.6s ease-out forwards;
+  }
+
+  @keyframes sparkle {
+    0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+  }
+
+  .container:hover .checkmark {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7),
+      0 4px 10px rgba(0, 0, 0, 0.2);
   }
 `;
