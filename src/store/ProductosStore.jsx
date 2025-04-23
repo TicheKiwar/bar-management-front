@@ -20,6 +20,7 @@ export const useProductosStore = create((set, get) => ({
     set({ parametros: p });
     set({ dataproductos: response });
     set({ productoItemSelect: [] });
+    
     return response;
   },
   selectProductos: (p) => {

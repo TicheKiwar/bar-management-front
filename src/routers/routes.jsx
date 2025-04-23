@@ -10,7 +10,6 @@ import {
   Personal,
   Empresa,
   Kardex,
- 
   Reportes,
   StockActualPorProducto,
   StockBajoMinimo,
@@ -20,6 +19,7 @@ import {
 
 import StockActualTodos from "../components/organismos/report/StockActualTodos";
 import { Layout } from "../hooks/Layout";
+import { Menu } from "../pages/menu";
 export function MyRoutes() {
   return (
     <Routes>
@@ -108,6 +108,16 @@ export function MyRoutes() {
           <ProtectedRoute accessBy="authenticated">
             <Layout>
               <Kardex />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/menu"
+        element={
+          <ProtectedRoute accessBy="authenticated">
+            <Layout>
+              <Menu />
             </Layout>
           </ProtectedRoute>
         }
