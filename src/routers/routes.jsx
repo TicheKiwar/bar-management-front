@@ -20,6 +20,8 @@ import {
 import StockActualTodos from "../components/organismos/report/StockActualTodos";
 import { Layout } from "../hooks/Layout";
 import { Menu } from "../pages/menu";
+import BarMenu from "../components/organismos/BarMenu";
+import CarritoModal from "../components/organismos/CarritoModal";
 export function MyRoutes() {
   return (
     <Routes>
@@ -131,7 +133,19 @@ export function MyRoutes() {
             </Layout>
           </ProtectedRoute>
         }
+      />
+
+      <Route
+        path="/cliente"
+        element={
+          <BarMenu></BarMenu>
+        }
       >
+
+      
+
+
+
         <Route path="stock-actual-todos" element={<StockActualTodos />} />
         <Route
           path="stock-actual-por-producto"
