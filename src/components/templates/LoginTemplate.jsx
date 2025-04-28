@@ -10,9 +10,9 @@ import {
   RegistrarAdmin,
   supabase,
   FooterLogin,
- 
+
 } from "../../index";
-import {Device} from "../../styles/breakpoints"
+import { Device } from "../../styles/breakpoints"
 import estrellas from "../../assets/estrellasVarias.svg";
 import { useMutation } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
@@ -60,6 +60,18 @@ export function LoginTemplate() {
       setStateInicio(!stateInicio);
     }
   }
+
+  
+  const handleClientLogin = () => {
+    console.log("Ingresando como cliente...");
+    navigate("/cliente");
+  };
+
+
+
+
+
+
 
   return (
     <Container imgfondo={v.imagenfondo}>
@@ -118,6 +130,13 @@ export function LoginTemplate() {
                 funcion={() => setState(!state)}
                 titulo="Crear cuenta"
                 bgcolor="#ffffff"
+              />
+              <Btnsave
+                funcion={handleClientLogin}
+                titulo="Ingresar como cliente"
+                bgcolor="#e0e0e0"
+                textColor="#333"
+                type="button" // Esto evita que dispare el submit
               />
             </ContainerBtn>
           </form>
