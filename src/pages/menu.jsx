@@ -4,8 +4,7 @@ import styled from "styled-components";
 export function Menu() {
   return (
     <Main>
-
-      <BarMenu />
+      <BarMenu/>
     </Main>
   );
 }
