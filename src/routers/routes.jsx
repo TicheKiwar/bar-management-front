@@ -6,6 +6,7 @@ import { Layout } from "../hooks/Layout";
 import { Menu } from "../pages/menu";
 import BarMenu from "../components/organismos/BarMenu";
 import { PublicOnlyRoute } from "../components/moleculas/PublicOnlyRoute";
+import EspaciosPage from "../pages/Espacios";
 import { UpdatePassword } from "../components/templates/UpdatePassword";
 import CarritoModal from "../components/organismos/CarritoModal";
 export function MyRoutes() {
@@ -97,6 +98,16 @@ export function MyRoutes() {
           <ProtectedRoute accessBy="authenticated">
             <Layout>
               <Kardex />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/espacios"
+        element={
+          <ProtectedRoute accessBy="authenticated">
+            <Layout>
+              <EspaciosPage />
             </Layout>
           </ProtectedRoute>
         }
