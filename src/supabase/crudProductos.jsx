@@ -23,6 +23,9 @@ export async function MostrarProductos(p) {
     const { data } = await supabase.rpc("mostrarproductos", {
       _id_empresa: p._id_empresa,
     });
+    console.log("data", await supabase.rpc("mostrarproductos", {
+      _id_empresa: p._id_empresa,
+    }));
     return data;
   } catch (error) {}
 }

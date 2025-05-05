@@ -1,18 +1,6 @@
 import styled from "styled-components";
-import {
-  Btnsave,
-  v,
-  useAuthStore,
-  InputText,
-  useUsuariosStore,
-  Spinner,
-  SpinnerLoader,
-  RegistrarAdmin,
-  supabase,
-  FooterLogin,
- 
-} from "../../index";
-import {Device} from "../../styles/breakpoints"
+import { Btnsave, v, useAuthStore, InputText, useUsuariosStore, Spinner, SpinnerLoader, RegistrarAdmin, supabase, FooterLogin } from "../../index";
+import { Device } from "../../styles/breakpoints";
 import estrellas from "../../assets/estrellasVarias.svg";
 import { useMutation } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
@@ -20,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import carrito from "../../assets/copa.png";
 import logo from "../../assets/inventarioslogo.png";
-import { MdOutlineInfo } from "react-icons/md";
+import { MdOutlineInfo, MdOutlineLockReset } from "react-icons/md";
 import { ThemeContext } from "../../App";
 export function LoginTemplate() {
   const { setTheme, theme } = useContext(ThemeContext);
@@ -30,6 +18,10 @@ export function LoginTemplate() {
   const { insertarUsuario } = useUsuariosStore();
   const { signInWithEmail } = useAuthStore();
   const [state, setState] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetError, setResetError] = useState("");
   const [correo, setCorreo] = useState("");
   const [pass, setPass] = useState("");
   const [stateInicio, setStateInicio] = useState(false);
@@ -43,6 +35,26 @@ export function LoginTemplate() {
       await insertarUsuario(p);
     },
   });
+  const handlePasswordReset = async () => {
+    if (!resetEmail) {
+      setResetError("Por favor ingresa tu correo electrónico");
+      return;
+    }
+
+    setResetError("");
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/update-password?force=true`,
+      });
+
+      if (error) throw error;
+
+      setResetSent(true);
+    } catch (error) {
+      console.error("Error al enviar correo:", error.message);
+      setResetError(error.message || "Error al enviar el correo. Por favor intenta nuevamente.");
+    }
+  };
   const {
     register,
     formState: { errors },
@@ -61,6 +73,11 @@ export function LoginTemplate() {
     }
   }
 
+  const handleClientLogin = () => {
+    console.log("Ingresando como cliente...");
+    navigate("/cliente");
+  };
+
   return (
     <Container imgfondo={v.imagenfondo}>
       <div className="contentLogo">
@@ -76,57 +93,149 @@ export function LoginTemplate() {
           {state && <RegistrarAdmin setState={() => setState(!state)} />}
 
           <Titulo>BarMaster</Titulo>
-          {stateInicio && (
-            <TextoStateInicio>datos incorrectos</TextoStateInicio>
-          )}
+          {stateInicio && <TextoStateInicio>datos incorrectos</TextoStateInicio>}
           <span className="ayuda">
             {" "}
-            Puedes crear una cuenta nueva ó <br></br>solicitar a tu empleador
-            una. <MdOutlineInfo />
+            Puedes crear una cuenta nueva ó <br></br>solicitar a tu empleador una. <MdOutlineInfo />
           </span>
           <p className="frase">Gestiona tu bar</p>
-          <form onSubmit={handleSubmit(iniciar)}>
-            <InputText icono={<v.iconoemail />}>
-              <input
-                className="form__field"
-                onChange={(e) => setCorreo(e.target.value)}
-                type="text"
-                placeholder="email"
-                {...register("correo", {
-                  required: true,
-                })}
-              />
-              <label className="form__label">email</label>
-              {errors.correo?.type === "required" && <p>Campo requerido</p>}
-            </InputText>
-            <InputText icono={<v.iconopass />}>
-              <input
-                className="form__field"
-                onChange={(e) => setPass(e.target.value)}
-                type="password"
-                placeholder="contraseña"
-                {...register("pass", {
-                  required: true,
-                })}
-              />
-              <label className="form__label">pass</label>
-              {errors.pass?.type === "required" && <p>Campo requerido</p>}
-            </InputText>
-            <ContainerBtn>
-              <Btnsave titulo="Iniciar" bgcolor="#fc6b32" />
-              <Btnsave
-                funcion={() => setState(!state)}
-                titulo="Crear cuenta"
-                bgcolor="#ffffff"
-              />
-            </ContainerBtn>
-          </form>
+          {!showResetForm ? (
+            <>
+              <form onSubmit={handleSubmit(iniciar)}>
+                <InputText icono={<v.iconoemail />}>
+                  <input
+                    className="form__field"
+                    onChange={(e) => setCorreo(e.target.value)}
+                    type="text"
+                    placeholder="email"
+                    {...register("correo", {
+                      required: true,
+                    })}
+                  />
+                  <label className="form__label">email</label>
+                  {errors.correo?.type === "required" && <p>Campo requerido</p>}
+                </InputText>
+                <InputText icono={<v.iconopass />}>
+                  <input
+                    className="form__field"
+                    onChange={(e) => setPass(e.target.value)}
+                    type="password"
+                    placeholder="contraseña"
+                    {...register("pass", {
+                      required: true,
+                    })}
+                  />
+                  <label className="form__label">pass</label>
+                  {errors.pass?.type === "required" && <p>Campo requerido</p>}
+                </InputText>
+                <ContainerBtn>
+                  <Btnsave titulo="Iniciar" bgcolor="#fc6b32" />
+                  <Btnsave funcion={() => setState(!state)} titulo="Crear cuenta" bgcolor="#ffffff" />
+                  <Btnsave
+                    funcion={handleClientLogin}
+                    titulo="Ingresar como cliente"
+                    bgcolor="#e0e0e0"
+                    textColor="#333"
+                    type="button" // Esto evita que dispare el submit
+                  />
+                </ContainerBtn>
+              </form>
+              <ResetPasswordLink onClick={() => setShowResetForm(true)}>
+                <MdOutlineLockReset /> Olvidé mi contraseña
+              </ResetPasswordLink>
+            </>
+          ) : (
+            <ResetPasswordForm>
+              <h3>Restablecer contraseña</h3>
+
+              {resetSent ? (
+                <SuccessMessage>¡Correo enviado! Revisa tu bandeja de entrada.</SuccessMessage>
+              ) : (
+                <>
+                  <p>Ingresa tu correo para recibir el enlace:</p>
+                  <InputText icono={<v.iconoemail />}>
+                    <input type="email" placeholder="tu@email.com" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} />
+                  </InputText>
+
+                  {resetError && <ResetErrorMessage>{resetError}</ResetErrorMessage>}
+
+                  <ContainerBtn>
+                    <Btnsave funcion={handlePasswordReset} titulo="Enviar enlace" bgcolor="#3b82f6" />
+                    <Btnsave
+                      funcion={() => {
+                        setShowResetForm(false);
+                        setResetError("");
+                        setResetSent(false);
+                      }}
+                      titulo="Cancelar"
+                      bgcolor="#e0e0e0"
+                      textColor="#333"
+                    />
+                  </ContainerBtn>
+                </>
+              )}
+            </ResetPasswordForm>
+          )}
         </div>
         <FooterLogin />
       </div>
     </Container>
   );
 }
+const ResetPasswordLink = styled.div`
+  margin-top: 20px;
+  color: #3b82f6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 14px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const ResetPasswordForm = styled.div`
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+
+  h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  p {
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 14px;
+    text-align: center;
+  }
+`;
+
+const SuccessMessage = styled.div`
+  padding: 15px;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const ResetErrorMessage = styled.div`
+  padding: 10px;
+  background: #f8d7da;
+  color: #721c24;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 14px;
+`;
+
 const Container = styled.div`
   background-size: cover;
   height: 100vh;
@@ -215,7 +324,7 @@ const Container = styled.div`
       color: #fc6c32;
       font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom:30px;
+      margin-bottom: 30px;
     }
     .ayuda {
       position: absolute;
@@ -231,8 +340,7 @@ const Container = styled.div`
         opacity: 1;
       }
       .cuadros {
-        transform: rotate(37deg) rotateX(5deg) rotateY(12deg) rotate(3deg)
-          skew(2deg) skewY(1deg) scaleX(1.2) scaleY(1.2);
+        transform: rotate(37deg) rotateX(5deg) rotateY(12deg) rotate(3deg) skew(2deg) skewY(1deg) scaleX(1.2) scaleY(1.2);
         color: red;
       }
     }

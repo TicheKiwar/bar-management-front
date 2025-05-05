@@ -1,25 +1,13 @@
 import { Routes, Route } from "react-router-dom";
-import {
-  Login,
-  Home,
-  ProtectedRoute,
-  Configuracion,
-  Categorias,
-  Productos,
-  Marca,
-  Personal,
-  Empresa,
-  Kardex,
- 
-  Reportes,
-  StockActualPorProducto,
-  StockBajoMinimo,
-  KardexEntradaSalida,
-  StockInventarioValorado,
-} from "../index";
+import { Login, Home, ProtectedRoute, Configuracion, Categorias, Productos, Marca, Personal, Empresa, Kardex, Reportes, StockActualPorProducto, StockBajoMinimo, KardexEntradaSalida, StockInventarioValorado } from "../index";
 
 import StockActualTodos from "../components/organismos/report/StockActualTodos";
 import { Layout } from "../hooks/Layout";
+import { Menu } from "../pages/menu";
+import BarMenu from "../components/organismos/BarMenu";
+import { PublicOnlyRoute } from "../components/moleculas/PublicOnlyRoute";
+import { UpdatePassword } from "../components/templates/UpdatePassword";
+import CarritoModal from "../components/organismos/CarritoModal";
 export function MyRoutes() {
   return (
     <Routes>
@@ -32,6 +20,7 @@ export function MyRoutes() {
         }
       />
 
+      <Route path="/update-password" element={<UpdatePassword />} />
       <Route
         path="/"
         element={
@@ -113,6 +102,16 @@ export function MyRoutes() {
         }
       />
       <Route
+        path="/menu"
+        element={
+          <ProtectedRoute accessBy="authenticated">
+            <Layout>
+              <Menu />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/reportes"
         element={
           <ProtectedRoute accessBy="authenticated">
@@ -121,21 +120,14 @@ export function MyRoutes() {
             </Layout>
           </ProtectedRoute>
         }
-      >
+      />
+
+      <Route path="/cliente" element={<BarMenu></BarMenu>}>
         <Route path="stock-actual-todos" element={<StockActualTodos />} />
-        <Route
-          path="stock-actual-por-producto"
-          element={<StockActualPorProducto />}
-        />
+        <Route path="stock-actual-por-producto" element={<StockActualPorProducto />} />
         <Route path="stock-bajo-minimo" element={<StockBajoMinimo />} />
-        <Route
-          path="kardex-entradas-salidas"
-          element={<KardexEntradaSalida />}
-        />
-        <Route
-          path="inventario-valorado"
-          element={<StockInventarioValorado />}
-        />
+        <Route path="kardex-entradas-salidas" element={<KardexEntradaSalida />} />
+        <Route path="inventario-valorado" element={<StockInventarioValorado />} />
       </Route>
     </Routes>
   );
