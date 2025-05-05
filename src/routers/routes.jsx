@@ -120,15 +120,16 @@ export function MyRoutes() {
             </Layout>
           </ProtectedRoute>
         }
-      />
-
-      <Route path="/cliente" element={<BarMenu></BarMenu>}>
+      >
         <Route path="stock-actual-todos" element={<StockActualTodos />} />
         <Route path="stock-actual-por-producto" element={<StockActualPorProducto />} />
         <Route path="stock-bajo-minimo" element={<StockBajoMinimo />} />
         <Route path="kardex-entradas-salidas" element={<KardexEntradaSalida />} />
         <Route path="inventario-valorado" element={<StockInventarioValorado />} />
       </Route>
+      
+      <Route path="/cliente" element={ <BarMenu />} />
+
     </Routes>
   );
 }
