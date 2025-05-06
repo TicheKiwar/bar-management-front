@@ -103,6 +103,14 @@ export const DataModulosConfiguracion =[
     link:"/configurar/marca",
    
   },
+  {
+    title:"Reservas",
+    subtitle:"gestiona tus reservas",
+    icono:"https://i.ibb.co/tMx1n89Q/reserva.png",
+    link:"/configurar/reserva",
+   
+  },
+  
 
 ]
 //tipo usuario
