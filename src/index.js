@@ -123,3 +123,7 @@ export * from './supabase/supabase.config';
 export * from './supabase/InsertOrder';
 export * from './utils/Conversiones';
 export * from './utils/dataEstatica';
+export * from './components/moleculas/OrderProductCard';
+export * from "./components/organismos/OrdenesConDetalles";
+export * from "./components/templates/templateOrder";
+export * from "./supabase/OrderCall";
