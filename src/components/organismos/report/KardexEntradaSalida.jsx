@@ -109,10 +109,10 @@ function KardexEntradaSalida() {
   );
   return (
     <Container>
-      <Buscador
+      {/* <Buscador
         funcion={() => setstateListaProductos(!stateListaproductos)}
         setBuscador={setBuscador}
-      />
+      /> */}
       {stateListaproductos && (
         <ListaGenerica funcion={(p)=>{
           selectProductos(p)
@@ -135,7 +135,7 @@ function KardexEntradaSalida() {
                     marginBottom: 10,
                   }}
                 >
-                   Kardex - entrada y salida por producto
+                   Kardex - entradas y salidas de Productos
                 </Text>
                 <Text>Fecha y hora del reporte: {formattedDate}</Text>
                 <View style={styles.table}>

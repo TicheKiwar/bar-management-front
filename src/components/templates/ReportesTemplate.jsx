@@ -18,7 +18,7 @@ export function ReportesTemplate() {
           </SidebarSection>
           <SidebarSection>
           <SidebarTitle>Entradas y salidas</SidebarTitle>
-          <SidebarItem to="kardex-entradas-salidas">Por producto</SidebarItem>
+          <SidebarItem to="kardex-entradas-salidas">Productos</SidebarItem>
           </SidebarSection>
           <SidebarSection>
           <SidebarTitle to="ss">Valorizado</SidebarTitle>
