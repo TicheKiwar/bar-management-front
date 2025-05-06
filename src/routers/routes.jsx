@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import { Login, Home, ProtectedRoute, Configuracion, Categorias, Productos, Marca, Personal, Empresa, Kardex, Reportes, Reservas, StockActualPorProducto, StockBajoMinimo, KardexEntradaSalida, StockInventarioValorado } from "../index";
+import { Login, Home, ProtectedRoute, Configuracion, Categorias, Productos, Marca, Personal, Empresa, Kardex, Reportes, StockActualPorProducto, StockBajoMinimo, KardexEntradaSalida, StockInventarioValorado, } from "../index";
+import { OrdenesConDetalles } from "../components/organismos/OrdenesConDetalles";
 
 import StockActualTodos from "../components/organismos/report/StockActualTodos";
 import { Layout } from "../hooks/Layout";
@@ -27,6 +28,16 @@ export function MyRoutes() {
           <ProtectedRoute accessBy="authenticated">
             <Layout>
               <Home />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Ordenes"
+        element={
+          <ProtectedRoute accessBy="authenticated">
+            <Layout>
+              <OrdenesConDetalles />
             </Layout>
           </ProtectedRoute>
         }

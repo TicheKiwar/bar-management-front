@@ -3,6 +3,7 @@ import { useProductosStore } from "../../index";
 import styled from "styled-components";
 import CarritoModal from "./CarritoModal";
 import { FaShoppingCart, FaTimes } from "react-icons/fa";
+import { InsertarOrden } from "../../index";
 
 // Componente ProductCardBar integrado (podrías moverlo a un archivo aparte luego)
 const ProductCardBar = ({
@@ -99,8 +100,12 @@ const BarMenu = () => {
     );
   };
 
-  const realizarCompra = (clienteData) => {
-    // Aquí iría la lógica para guardar la compra en tu base de datos
+  const realizarCompra = async (clienteData) => {
+    await InsertarOrden({
+      carrito,
+      clienteData,
+    });
+
     console.log("Compra realizada:", { carrito, clienteData });
     
     // Mostrar mensaje de éxito
