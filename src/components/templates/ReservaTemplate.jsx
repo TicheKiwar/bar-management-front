@@ -7,9 +7,9 @@ import {
   Lottieanimacion,
   Buscador,
   TablaReserva,
-  RegistrarReserva,
   useReservaStore
 } from "../../index";
+import RegistrarReserva from "../organismos/formularios/RegistrarReserva";
 import { useState } from "react";
 import vacio from "../../assets/vacio.json";
 

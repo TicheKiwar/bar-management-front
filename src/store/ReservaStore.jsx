@@ -1,53 +1,31 @@
 import { create } from "zustand";
-import {
-    BuscarReserva,
-    EditarReserva,
-    EliminarReserva,
-    InsertarReserva,
-    MostrarReserva,
-} from "../index";
+import { supabase } from "../supabase/supabase.config";
 
-export const useReservaStore = create((set, get) => ({
-    buscador: "",
-    setBuscador: (p) => {
-        set({ buscador: p });
-    },
-    datareserva: [],
-    reservaItemSelect: [],
-    parametros: {},
+export const useReservaStore = create((set) => ({
+  datareservas: [],
+  buscador: "",
+  setBuscador: (texto) => set({ buscador: texto }),
+  
+  mostrarReservas: async ({ idempresa }) => {
+    const { data, error } = await supabase
+      .from("reservas")
+      .select("*")
+      .eq("id_empresa", idempresa);
 
-    mostrarReserva: async (p) => {
-        const response = await MostrarReserva(p);
-        set({ parametros: p });
-        set({ datareserva: response });
-        set({ reservaItemSelect: response[0] });
-        return response;
-    },
+    if (error) throw error;
+    set({ datareservas: data });
+    return data;
+  },
 
-    selectReserva: (p) => {
-        set({ reservaItemSelect: p });
-    },
+  buscarReservas: async ({ descripcion, id_empresa }) => {
+    const { data, error } = await supabase
+      .from("reservas")
+      .select("*")
+      .ilike("nombre_cliente", `%${descripcion}%`)
+      .eq("id_empresa", id_empresa);
 
-    insertarReserva: async (p) => {
-        await InsertarReserva(p);
-        const { mostrarReserva, parametros } = get();
-        set(mostrarReserva(parametros));
-    },
-
-    eliminarReserva: async (p) => {
-        await EliminarReserva(p);
-        const { mostrarReserva, parametros } = get();
-        set(mostrarReserva(parametros));
-    },
-
-    editarReserva: async (p) => {
-        await EditarReserva(p);
-        const { mostrarReserva, parametros } = get();
-        set(mostrarReserva(parametros));
-    },
-
-    buscarReserva: async (p) => {
-        const response = await BuscarReserva(p);
-        set({ datareserva: response });
-    },
+    if (error) throw error;
+    set({ datareservas: data });
+    return data;
+  },
 }));

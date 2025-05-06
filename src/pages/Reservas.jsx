@@ -34,8 +34,10 @@ export function Reservas() {
   }
 
   if (error) {
-    return <span>Error...</span>;
+    console.error("Error al cargar reservas:", error);
+    return <span>Error: {error.message}</span>;
   }
+  
 
   return (
     <>

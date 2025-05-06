@@ -9,7 +9,7 @@ import {
 } from "../../../index";
 import { useForm } from "react-hook-form";
 
-export function RegistrarReserva({ onClose, dataSelect, accion }) {
+export default function RegistrarReserva({ onClose, dataSelect, accion }) {
     const { insertarReserva, editarReserva } = useReservaStore();
     const { dataempresa } = useEmpresaStore();
 

@@ -40,6 +40,7 @@ import {MdOutlineCategory} from "react-icons/md"
 import {FaBuilding} from "react-icons/fa"
 import {TbReportAnalytics} from "react-icons/tb"
 export const v = {
+  
   iconoreportes : TbReportAnalytics,
   iconoempresa:FaBuilding,
   iconocategorias:MdOutlineCategory,
