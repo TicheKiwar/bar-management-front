@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import styled from "styled-components";
-import { v } from "../../../styles/variables";
+import { v } from "../../../styles/variables.jsx";
 import {
     InputText,
     Btnsave,
@@ -45,7 +45,7 @@ export default function RegistrarReserva({ onClose, dataSelect, accion }) {
         if (accion === "Editar") {
             // Opcional: cargar info adicional si se necesita
         }
-    }, []);
+    }, [accion]);
 
     return (
         <Container>
@@ -69,7 +69,7 @@ export default function RegistrarReserva({ onClose, dataSelect, accion }) {
                             <InputText icono={<v.iconoreserva />}>
                                 <input
                                     className="form__field"
-                                    defaultValue={dataSelect?.nombre}
+                                    defaultValue={dataSelect?.nombre || ""}
                                     type="text"
                                     placeholder=""
                                     {...register("nombre", { required: true })}
@@ -81,7 +81,7 @@ export default function RegistrarReserva({ onClose, dataSelect, accion }) {
                             <InputText icono={<v.iconocliente />}>
                                 <input
                                     className="form__field"
-                                    defaultValue={dataSelect?.cliente}
+                                    defaultValue={dataSelect?.cliente || ""}
                                     type="text"
                                     placeholder=""
                                     {...register("cliente", { required: true })}
@@ -93,7 +93,7 @@ export default function RegistrarReserva({ onClose, dataSelect, accion }) {
                             <InputText icono={<v.iconocalendario />}>
                                 <input
                                     className="form__field"
-                                    defaultValue={dataSelect?.fecha}
+                                    defaultValue={dataSelect?.fecha || ""}
                                     type="date"
                                     placeholder=""
                                     {...register("fecha", { required: true })}
