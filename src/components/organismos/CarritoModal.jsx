@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FaTimes, FaShoppingCart } from 'react-icons/fa';
 import React, { useState } from 'react';
-
+import { supabase } from '../../supabase/supabase.config'; 
 
 const CarritoModal = ({ 
   carrito, 
@@ -16,16 +16,136 @@ const CarritoModal = ({
     telefono: '',
     direccion: ''
   });
+  
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setClienteData(prev => ({ ...prev, [name]: value }));
+    
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
-  const handleCheckout = () => {
-    onCheckout(clienteData);
-    // Aquí podrías resetear el formulario si lo deseas
+  const validarFormulario = () => {
+    const nuevosErrores = {};
+  
+    const soloLetras = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/;
+    const soloNumeros = /^\d{10}$/; 
+  
+    
+    if (!clienteData.nombre.trim()) {
+      nuevosErrores.nombre = 'El nombre es obligatorio';
+    } else if (!soloLetras.test(clienteData.nombre.trim())) {
+      nuevosErrores.nombre = 'El nombre solo debe contener letras';
+    }
+  
+    
+    if (!clienteData.dni.trim()) {
+      nuevosErrores.dni = 'La cédula es obligatoria';
+    } else if (!/^\d+$/.test(clienteData.dni)) {
+      nuevosErrores.dni = 'La cédula solo debe contener números';
+    } else if (clienteData.dni.length !== 10) {
+      nuevosErrores.dni = 'La cédula debe tener 10 dígitos';
+    }
+  
+    
+    if (!clienteData.telefono.trim()) {
+      nuevosErrores.telefono = 'El teléfono es obligatorio';
+    } else if (!/^\d+$/.test(clienteData.telefono)) {
+      nuevosErrores.telefono = 'El teléfono solo debe contener números';
+    } else if (clienteData.telefono.length !== 10) {
+      nuevosErrores.telefono = 'El teléfono debe tener 10 dígitos';
+    }
+  
+    setErrors(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
   };
+  
+
+  const guardarEnSupabase = async () => {
+    try {
+      
+      const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+  
+      const { data: ordenData, error: ordenError } = await supabase
+        .from('ordenes')
+        .insert([{
+          nombre_cliente: clienteData.nombre,
+          dni_cliente: clienteData.dni,
+          telefono_cliente: clienteData.telefono,
+          direccion_cliente: clienteData.direccion || '',
+          total: total
+        }])
+        .select();
+  
+      if (ordenError) throw ordenError;
+  
+      const idOrden = ordenData[0].id_orden;
+  
+      
+      const detallesPromises = carrito.map(item => {
+        return supabase
+          .from('detalle_orden')
+          .insert({
+            id_orden: idOrden,
+            id_producto: item.id, 
+            cantidad: item.cantidad,
+            precio_unitario: item.precio,
+            subtotal: item.precio * item.cantidad
+          });
+      });
+  
+      await Promise.all(detallesPromises);
+  
+      return idOrden;
+    } catch (error) {
+      console.error('Error al guardar la orden:', error);
+      throw error;
+    }
+  };
+  
+  const handleCheckout = async () => {
+    if (!validarFormulario()) {
+      return;
+    }
+  
+    setIsSubmitting(true);
+  
+    try {
+      const idOrden = await guardarEnSupabase();
+  
+      
+      setMensajeExito(`¡Compra realizada con éxito! Número de orden: ${idOrden}`);
+  
+      
+      setClienteData({
+        nombre: '',
+        dni: '',
+        telefono: '',
+        direccion: ''
+      });
+  
+      // Llamar al callback original si existe
+      if (onCheckout) {
+        onCheckout(clienteData);
+      }
+  
+      // Opcional: cerrar el modal después de un tiempo
+      setTimeout(() => {
+        onClose();
+      }, 3000);
+  
+    } catch (error) {
+      setErrors({ form: 'Error al procesar la compra. Inténtelo nuevamente.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
 
   const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
 
@@ -39,6 +159,14 @@ const CarritoModal = ({
         <ModalTitle>
           <FaShoppingCart /> Carrito de Compras
         </ModalTitle>
+        
+        {mensajeExito && (
+          <MensajeExito>{mensajeExito}</MensajeExito>
+        )}
+        
+        {errors.form && (
+          <MensajeError>{errors.form}</MensajeError>
+        )}
         
         <ModalContent>
           <ProductosSection>
@@ -85,34 +213,40 @@ const CarritoModal = ({
           <ClienteSection>
             <SectionTitle>Datos del Cliente</SectionTitle>
             <FormGroup>
-              <Label>Nombre completo</Label>
+              <Label>Nombre completo *</Label>
               <Input 
                 type="text" 
                 name="nombre" 
                 value={clienteData.nombre}
                 onChange={handleInputChange}
                 placeholder="Ingrese nombre completo"
+                required
               />
+              {errors.nombre && <ErrorText>{errors.nombre}</ErrorText>}
             </FormGroup>
             <FormGroup>
-              <Label>DNI</Label>
+              <Label>Cédula *</Label>
               <Input 
                 type="text" 
                 name="dni" 
                 value={clienteData.dni}
                 onChange={handleInputChange}
-                placeholder="Ingrese DNI"
+                placeholder="Ingrese Cédula"
+                required
               />
+              {errors.dni && <ErrorText>{errors.dni}</ErrorText>}
             </FormGroup>
             <FormGroup>
-              <Label>Teléfono</Label>
+              <Label>Teléfono *</Label>
               <Input 
                 type="text" 
                 name="telefono" 
                 value={clienteData.telefono}
                 onChange={handleInputChange}
                 placeholder="Ingrese teléfono"
+                required
               />
+              {errors.telefono && <ErrorText>{errors.telefono}</ErrorText>}
             </FormGroup>
             <FormGroup>
               <Label>Dirección (opcional)</Label>
@@ -129,9 +263,9 @@ const CarritoModal = ({
         
         <CheckoutButton 
           onClick={handleCheckout}
-          disabled={carrito.length === 0}
+          disabled={carrito.length === 0 || isSubmitting}
         >
-          Realizar Compra
+          {isSubmitting ? 'Procesando...' : 'Realizar Compra'}
         </CheckoutButton>
       </ModalContainer>
     </ModalOverlay>
@@ -319,6 +453,37 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+  
+  &:required {
+    border-left: 3px solid #2c3e50;
+  }
+`;
+
+const ErrorText = styled.p`
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0;
+`;
+
+const MensajeExito = styled.div`
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  text-align: center;
+`;
+
+const MensajeError = styled.div`
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  text-align: center;
 `;
 
 const CheckoutButton = styled.button`
