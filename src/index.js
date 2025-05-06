@@ -120,5 +120,6 @@ export * from './supabase/crudProductos';
 export * from './supabase/crudUsuarios';
 export * from './supabase/globalSupabase';
 export * from './supabase/supabase.config';
+export * from './supabase/InsertOrder';
 export * from './utils/Conversiones';
 export * from './utils/dataEstatica';
