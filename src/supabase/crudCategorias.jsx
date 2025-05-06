@@ -2,8 +2,8 @@ import { supabase } from "../index";
 import Swal from "sweetalert2";
 export async function InsertarCategorias(p) {
   try {
-     const { error } = await supabase.rpc("insertarcategorias", p);
-     if (error) {
+    const { error } = await supabase.rpc("insertarcategorias", p);
+    if (error) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -12,9 +12,9 @@ export async function InsertarCategorias(p) {
       });
     }
   } catch (error) {
-    
+
   }
- 
+
 }
 export async function MostrarCategorias(p) {
   try {
@@ -24,7 +24,7 @@ export async function MostrarCategorias(p) {
       .eq("id_empresa", p.idempresa)
       .order("id", { ascending: true });
     return data;
-  } catch (error) {}
+  } catch (error) { }
 }
 export async function EliminarCategorias(p) {
   try {
@@ -78,8 +78,8 @@ export async function BuscarCategorias(p) {
       .from("categorias")
       .select()
       .eq("id_empresa", p.id_empresa)
-      .ilike("descripcion","%"+ p.descripcion+"%")
-      
+      .ilike("descripcion", "%" + p.descripcion + "%")
+
     return data;
-  } catch (error) {}
+  } catch (error) { }
 }

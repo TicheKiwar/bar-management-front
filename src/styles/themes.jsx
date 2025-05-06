@@ -58,7 +58,7 @@ export const Dark = {
     fontxxxl: "4em",
     fontButton: "0.875em",
     navHeight: "5rem",
-    whiteBg:"#f59674",
+    whiteBg:"#2b6a00",
     bg: "#272727",
     bgAlpha: "rgba(0,0,0,.3)",
     bg2: "rgb(30,30,30)",
