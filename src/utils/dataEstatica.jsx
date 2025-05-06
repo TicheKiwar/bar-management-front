@@ -2,6 +2,7 @@ import { v } from "../styles/variables";
 import {
   AiOutlineHome,
   AiOutlineSetting,
+  AiFillAppstore,
 } from "react-icons/ai";
 
 export const DesplegableUser = [
@@ -45,8 +46,8 @@ export const LinksArray = [
 ];
 export const SecondarylinksArray = [
   {
-    label: "Configuración",
-    icon: <AiOutlineSetting />,
+    label: "Módulos",
+    icon: <AiFillAppstore />,
     to: "/configurar",
   },
 
@@ -92,14 +93,14 @@ export const DataModulosConfiguracion =[
   {
     title:"Categoria de productos",
     subtitle:"asigna categorias a tus productos",
-    icono:"https://i.ibb.co/VYbMRLZ/categoria.png",
+    icono:"https://i.ibb.co/35bSGXsh/categoria.png",
     link:"/configurar/categorias",
     
   },
   {
     title:"Marca de productos",
     subtitle:"gestiona tus marcas",
-    icono:"https://i.ibb.co/1qsbCRb/piensa-fuera-de-la-caja.png",
+    icono:"https://i.ibb.co/zVcKt2bx/marca.png",
     link:"/configurar/marca",
    
   },
